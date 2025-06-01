@@ -1,4 +1,5 @@
-@import 'custom';
+
+@import '_custom';
 
 html{
     position:relative;
@@ -32,7 +33,7 @@ p{
         width: 100%;
         height: 100%;
         background-image: url('../img/fond1.jpg');
-        background-size: cover;
+        background-size: contain;
         filter: brightness(0.3);
     }
     *{
@@ -104,3 +105,4 @@ p{
         padding:10px;
     }
 }
+@import '../node_modules/bootstrap/scss/bootstrap';
