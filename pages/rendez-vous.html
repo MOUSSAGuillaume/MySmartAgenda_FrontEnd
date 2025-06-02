@@ -1,0 +1,40 @@
+<div class="container p-4">
+    <h1 class="text-center text-primary mb-3">Mes Rendez-vous</h1>
+
+    <div class="text-centre">
+        <button class="btn btn-primary" id="add-rdv-btn" data-bs-toggle="modal" data-bs-target="#rdvModal">Ajouter un rendez-vous</button>
+    </div>
+
+    <div id="rendezvous-list" class="list-group">
+        <!-- Les rendez-vous seront insérés ici dynamiquement -->
+    </div>
+
+    <!-- Modal d'ajout -->
+    <div class="modal fade" id="rdvModal" tabindex="-1" aria-labelledby="rdvModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form id="rdv-form" class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rdvModalLabel">Nouveau Rendez-vous</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="titre" class="form-label">Titre</label>
+                        <input type="text" class="form-control" id="titre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="heure" class="form-label">Heure</label>
+                        <input type="time" class="form-control" id="heure" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

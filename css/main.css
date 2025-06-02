@@ -1,4 +1,16 @@
 @charset "UTF-8";
+.list-group-item-danger {
+  background-color: #f8d7da;
+}
+
+.list-group-item-warning {
+  background-color: #fff3cd;
+}
+
+.list-group-item-success {
+  background-color: #d4edda;
+}
+
 html {
   position: relative;
   min-height: 100%;
@@ -87,10 +99,21 @@ p {
   color: #906427;
 }
 
-.allreserations a {
-  display: block;
-  color: #292222;
-  padding: 10px;
+#todo-list li {
+  transition: all 0.3s;
+  border-left: 5px solid transparent;
+}
+
+#todo-list li.bg-danger {
+  border-left-color: #dc3545;
+}
+
+#todo-list li.bg-info {
+  border-left-color: #0dcaf0;
+}
+
+#todo-list li.bg-success {
+  border-left-color: #198754;
 }
 
 /*!
