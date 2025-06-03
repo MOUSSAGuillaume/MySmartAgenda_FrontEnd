@@ -1,0 +1,225 @@
+.ansi-black-fg {
+    color: #000
+}
+
+.ansi-black-bg {
+    background-color: #000
+}
+
+.ansi-red-fg {
+    color: #f66
+}
+
+.ansi-red-bg {
+    background-color: #f66
+}
+
+.ansi-green-fg {
+    color: #94f494
+}
+
+.ansi-green-bg {
+    background-color: #94f494
+}
+
+.ansi-yellow-fg {
+    color: #f4f47b
+}
+
+.ansi-yellow-bg {
+    background-color: #f4f47b
+}
+
+.ansi-blue-fg {
+    color: #9e9eff
+}
+
+.ansi-blue-bg {
+    background-color: #9e9eff
+}
+
+.ansi-magenta-fg {
+    color: #db6bdb
+}
+
+.ansi-magenta-bg {
+    background-color: #db6bdb
+}
+
+.ansi-cyan-fg {
+    color: #81eeee
+}
+
+.ansi-cyan-bg {
+    background-color: #81eeee
+}
+
+.ansi-white-fg {
+    color: #d6d6d6
+}
+
+.ansi-white-bg {
+    background-color: #d6d6d6
+}
+
+.ansi-bright-black-fg {
+    color: #6e6e6e
+}
+
+.ansi-bright-red-fg {
+    color: #ffa8a8
+}
+
+.ansi-bright-green-fg {
+    color: #0f0
+}
+
+.ansi-bright-yellow-fg {
+    color: #ffffa8
+}
+
+.ansi-bright-blue-fg {
+    color: #9494ff
+}
+
+.ansi-bright-magenta-fg {
+    color: #ffb3ff
+}
+
+.ansi-bright-cyan-fg {
+    color: #adffff
+}
+
+.ansi-bright-white-fg {
+    color: #fff
+}
+
+._codemirror_8a1c3_1 .cm-editor {
+    background-color: var(--bg-primary);
+    border: none;
+    border-radius: 0;
+    flex: 1;
+    font-size: 14px
+}
+
+._codemirror_8a1c3_1 .cm-scroller {
+    scrollbar-color: var(--main-surface-tertiary) transparent
+}
+
+._codemirror_8a1c3_1 .cm-scroller:hover {
+    scrollbar-color: var(--gray-200) transparent
+}
+
+.dark ._codemirror_8a1c3_1 .cm-scroller:hover {
+    scrollbar-color: var(--gray-600) transparent
+}
+
+._codemirror_8a1c3_1 .cm-focused {
+    outline: none
+}
+
+._codemirror_8a1c3_1._preview_8a1c3_26 .cm-content {
+    padding: 1rem 0 2rem !important
+}
+
+._codemirror_8a1c3_1:not(._preview_8a1c3_26) .cm-content {
+    padding: 1rem 0 50vh !important
+}
+
+._codemirror_8a1c3_1 .cm-activeLineGutter,
+._codemirror_8a1c3_1 .cm-gutters {
+    background-color: var(--bg-primary)
+}
+
+._codemirror_8a1c3_1 .cm-gutters {
+    color: var(--text-quaternary)
+}
+
+[dir=ltr] ._codemirror_8a1c3_1 .cm-gutters {
+    border-right: none;
+    padding-left: 12px;
+    padding-right: 2px
+}
+
+[dir=rtl] ._codemirror_8a1c3_1 .cm-gutters {
+    border-left: none;
+    padding-left: 2px;
+    padding-right: 12px
+}
+
+[dir=ltr] ._codemirror_8a1c3_1 .cm-gutters .cm-lineNumbers {
+    padding-right: 0
+}
+
+[dir=rtl] ._codemirror_8a1c3_1 .cm-gutters .cm-lineNumbers {
+    padding-left: 0
+}
+
+._codemirror_8a1c3_1 .cm-foldGutter .cm-gutterElement {
+    align-items: center;
+    display: flex;
+    justify-content: center
+}
+
+._codemirror_8a1c3_1 .cm-line.streaming-line-overlay {
+    position: relative
+}
+
+._codemirror_8a1c3_1 .cm-line.streaming-line-overlay:before {
+    content: "";
+    height: 100%;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1
+}
+
+[dir=ltr] ._codemirror_8a1c3_1 .cm-line.streaming-line-overlay:before {
+    left: 0
+}
+
+[dir=rtl] ._codemirror_8a1c3_1 .cm-line.streaming-line-overlay:before {
+    right: 0
+}
+
+._codemirror_8a1c3_1 .cm-deletedChunk del {
+    text-decoration: none
+}
+
+._modelCursor_1mtn0_1 {
+    display: inline-block;
+    height: 0;
+    position: relative;
+    width: 0
+}
+
+._modelCursor_1mtn0_1:after {
+    content: "●";
+    font-family: Circle, system-ui, sans-serif;
+    line-height: normal;
+    vertical-align: baseline
+}
+
+[dir=ltr] ._modelCursor_1mtn0_1:after {
+    margin-left: .25rem
+}
+
+[dir=rtl] ._modelCursor_1mtn0_1:after {
+    margin-right: .25rem
+}
+
+._tableContainer_16hzy_1 {
+    --thread-content-width: min(calc(100cqw - var(--thread-content-margin, 0)*2), var(--thread-content-max-width));
+    --thread-gutter-size: calc((100cqw - var(--thread-content-width))/2);
+    margin-inline: calc(var(--thread-gutter-size)*-1);
+    overflow-x: auto;
+    pointer-events: none;
+    scrollbar-width: none;
+    width: 100cqw
+}
+
+._tableWrapper_16hzy_14 {
+    margin-inline: var(--thread-gutter-size) var(--thread-content-margin);
+    pointer-events: auto
+}

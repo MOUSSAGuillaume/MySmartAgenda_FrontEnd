@@ -30,17 +30,17 @@ const LoadContentPage = async () => {
   //Vérifier les droits d'accès à la page
   const allRolesArray = actualRoute.authorize;
 
-  if(allRolesArray.length > 0){
-    if(allRolesArray.includes("disconnected")){
+  if (allRolesArray.length > 0) {
+    if (allRolesArray.includes("disconnected")) {
       //Si l'utilisateur est connecté, on le redirige vers la page d'accueil
-      if(isConnected()){
+      if (isConnected()) {
         window.location.replace("/");
         return;
       }
     }
-    else{
-      const roleUser =getRole();
-      if(!allRolesArray.includes(roleUser)){
+    else {
+      const roleUser = getRole();
+      if (!allRolesArray.includes(roleUser)) {
         window.location.replace("/");
       }
     }
@@ -53,15 +53,19 @@ const LoadContentPage = async () => {
   document.getElementById("main-page").innerHTML = html;
 
   // Ajout du contenu JavaScript
-  if (actualRoute.pathJS != "") {
-    // Création d'une balise script
-    var scriptTag = document.createElement("script");
-    scriptTag.setAttribute("type", "text/javascript");
-    scriptTag.setAttribute("src", actualRoute.pathJS);
+  if (actualRoute.pathJS !== "") {
+  import(`../${actualRoute.pathJS}`)
+    .then((module) => {
+      if (typeof module.default === "function") {
+        module.default(); // exécute initCalendarPage
+      }
+    })
+    .catch((err) => {
+      console.error("Erreur lors du chargement du module JS :", err);
+    });
+}
 
-    // Ajout de la balise script au corps du document
-    document.querySelector("body").appendChild(scriptTag);
-  }
+
 
   // Changement du titre de la page
   document.title = actualRoute.title + " - " + websiteName;
@@ -86,3 +90,4 @@ window.onpopstate = LoadContentPage;
 window.route = routeEvent;
 // Chargement du contenu de la page au chargement initial
 LoadContentPage();
+
