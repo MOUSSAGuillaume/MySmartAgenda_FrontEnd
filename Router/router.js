@@ -54,7 +54,7 @@ const LoadContentPage = async () => {
 
   // Ajout du contenu JavaScript
   if (actualRoute.pathJS !== "") {
-  import(`../${actualRoute.pathJS}`)
+  import(actualRoute.pathJS)
     .then((module) => {
       if (typeof module.default === "function") {
         module.default(); // exécute initCalendarPage
@@ -71,7 +71,7 @@ const LoadContentPage = async () => {
   document.title = actualRoute.title + " - " + websiteName;
 
   //afficher et masquer les elements en fonction du rôle
-  //showAndHideElementsForRoles();
+  showAndHideElementsForRoles();
 };
 
 // Fonction pour gérer les événements de routage (clic sur les liens)

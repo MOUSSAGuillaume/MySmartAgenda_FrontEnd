@@ -1,75 +1,74 @@
-
 const tokenCookieName = "accesstoken";
 const RoleCookieName = "role";
 const signoutBtn = document.getElementById("signout-btn");
 const apiUrl = "http://127.0.0.1:8000/api/";
-signoutBtn.addEventListener("click", signout);
+const testMode = true; // 🧪 Activer pour mocker les données sans backend
+
+if (signoutBtn) {
+    signoutBtn.addEventListener("click", signout);
+}
 
 function getRole() {
     return getCookie(RoleCookieName);
 }
+
 function signout() {
     eraseCookie(tokenCookieName);
     eraseCookie(RoleCookieName);
     window.location.reload();
 }
 
-function setToken(token){
+function setToken(token) {
     setCookie(tokenCookieName, token, 7); // cookie pour 7 jours
 }
 
-function getToken(){
+function getToken() {
     return getCookie(tokenCookieName);
 }
 
-function setCookie(name,value,days) {
+function setCookie(name, value, days) {
     let expires = "";
     if (days) {
         var date = new Date();
-        date.setTime(date.getTime() + (days*24*60*60*1000));
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
         expires = "; expires=" + date.toUTCString();
     }
-    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
 }
 
 function getCookie(name) {
     let nameEQ = name + "=";
     let ca = document.cookie.split(';');
-    for(var i=0;i < ca.length;i++) {
+    for (var i = 0; i < ca.length; i++) {
         let c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1,c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
     }
     return null;
 }
 
-function eraseCookie(name) {   
-    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+function eraseCookie(name) {
+    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
-function isConnected(){
-    if(getToken() == null || getToken == undefined){
-        return false;
-    }
-    else{
-        return true;
-    }
+function isConnected() {
+    return !!getToken();
 }
 
 /*
 disconnected 
-connected (admin ou clients)
- -admin 
- -client 
+connected (admin ou client)
+ - admin 
+ - client 
 */
-function showAndHideElementsForRoles(){
+function showAndHideElementsForRoles() {
     const userConnected = isConnected();
     const role = getRole();
 
     let allElementsToEdit = document.querySelectorAll('[data-show]');
 
     allElementsToEdit.forEach(element => {
-        switch (element.dataset.show){
+        switch (element.dataset.show) {
             case 'disconnected':
                 if (userConnected) {
                     element.classList.add("d-none");
@@ -81,49 +80,73 @@ function showAndHideElementsForRoles(){
                 }
                 break;
             case 'admin':
-                if (!userConnected || role != "admin") {
+                if (!userConnected || role !== "admin") {
                     element.classList.add("d-none");
                 }
                 break;
             case 'client':
-                if (!userConnected || role != "client") {
+                if (!userConnected || role !== "client") {
                     element.classList.add("d-none");
                 }
                 break;
         }
-    })
+    });
 }
 
-function sanitizeHtml(text){
+function sanitizeHtml(text) {
     const tempHtml = document.createElement('div');
     tempHtml.textContent = text;
     return tempHtml.innerHTML;
 }
 
-function getInfoUser(){
+// ✅ Fonction mockée si testMode est activé
+function getInfoUser() {
+    if (testMode) {
+        // Simule une réponse d'utilisateur sans contact API
+        return Promise.resolve({
+            id: 1,
+            name: "Alice Test",
+            email: "alice@mock.com",
+            role: getRole() || "client" // par défaut client
+        });
+    }
+
+    // ❌ API réelle (désactivée en mode test)
+    /*
     let myHeaders = new Headers();
     myHeaders.append("X-AUTH-TOKEN", getToken());
-    
     let requestOptions = {
         method: 'GET',
         headers: myHeaders,
         redirect: 'follow'
     }
-
-    fetch(apiUrl+"account/me", requestOptions)
-    .then(response => {
-        if (!response.ok){
+    return fetch(apiUrl + "account/me", requestOptions)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Erreur lors de la récupération des infos utilisateur");
+            }
             return response.json();
-        }
-        else{
-            console.log("impossible de récupérer les infos de l'utilisateur");
-        }
-        
-    })
-    .then(result => {
-        return result;
-    })
-    .catch(error => {
-        console0log("erreur lors de la récupération des données utilisateur", error);
-    });
+        })
+        .then(result => {
+            return result;
+        })
+        .catch(error => {
+            console.log("Erreur lors de la récupération des données utilisateur", error);
+        });
+    */
+
+
 }
+// Lancement global une fois que tout est chargé
+    window.addEventListener("DOMContentLoaded", () => {
+        showAndHideElementsForRoles();
+
+        getInfoUser().then(user => {
+            console.log("Utilisateur connecté :", user);
+
+            const nameEl = document.getElementById("user-name");
+            if (nameEl && user?.name) {
+                nameEl.textContent = user.name;
+            }
+        });
+    });

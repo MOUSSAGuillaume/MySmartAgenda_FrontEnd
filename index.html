@@ -28,22 +28,24 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="/">Accueil</a>
                             </li>
-                            <li class="nav-item">
+                            
+                            <!-- Liens visibles uniquement quand connecté -->
+                            <li class="nav-item" data-show="connected">
                                 <a class="nav-link" href="/todoliste">ToDoListe</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" data-show="connected">
                                 <a class="nav-link" href="/calendar">Calendar</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" data-show="connected">
                                 <a class="nav-link" href="/rendezVous">Mes Rendez-vous</a>
                             </li>
-                            <!--<li class="nav-item">
-                                <a class="nav-link" href="/account">Mon Compte</a>
-                            </li>-->
+                            
+                            <!-- Visible si déconnecté -->
                             <li class="nav-item" data-show="disconnected">
                                 <a class="nav-link" href="/signin">Connexion</a>
                             </li>
-                            
+
+                            <!-- Bouton déconnexion visible si connecté -->
                             <li class="nav-item" data-show="connected">
                                 <button class="nav-link" id="signout-btn">Déconnexion</button>
                             </li>
@@ -51,13 +53,13 @@
                     </div>
                 </div>
             </nav>
-    
+                
         </header>
-
+            
         <main id="main-page">
             <!-- Le contenu de la page sera injectée ici-->
         </main>
-
+            
         <footer class="bg-dark text-white text-center footer ">
             <div class="row">
                 <div class="col-12 col-lg-4">
