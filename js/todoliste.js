@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
+  console.log("Script Todo chargé");
+
   const form = document.getElementById("todo-form");
   const input = document.getElementById("todo-text");
   const statusSelect = document.getElementById("todo-status");
@@ -6,12 +8,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const timeInput = document.getElementById("todo-time");
   const list = document.getElementById("todo-list");
   const filterButtons = document.querySelectorAll(".filter-btn");
+  const submitBtn = form.querySelector('button[type="submit"]');
 
-  let todos = JSON.parse(localStorage.getItem("todos")) || [];
+  let todos = [];
   let currentFilter = "all";
 
-  function saveTodos() {
-    localStorage.setItem("todos", JSON.stringify(todos));
+  // Fonction pour changer le texte du bouton Ajouter / Modifier
+  function setFormMode(editing) {
+    submitBtn.textContent = editing ? "Modifier" : "Ajouter";
+  }
+
+  async function loadTodos() {
+    try {
+      const res = await fetch("http://localhost:8000/api/todos");
+      if (!res.ok) throw new Error("Erreur chargement todos");
+      todos = await res.json();
+      renderTodos();
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors du chargement des tâches");
+    }
   }
 
   function getBadgeClass(status) {
@@ -27,16 +43,13 @@ document.addEventListener("DOMContentLoaded", () => {
     list.innerHTML = "";
     todos
       .filter(todo => currentFilter === "all" || todo.status === currentFilter)
-      .forEach((todo, index) => {
+      .forEach(todo => {
         const li = document.createElement("li");
         li.className = `list-group-item d-flex flex-column flex-md-row justify-content-between align-items-start gap-2 ${getBadgeClass(todo.status)}`;
 
         const content = document.createElement("div");
         content.classList.add("flex-grow-1");
-        content.innerHTML = `
-          <strong>${todo.text}</strong><br>
-          <small>${todo.date || ""} ${todo.time || ""}</small>
-        `;
+        content.innerHTML = `<strong>${todo.title}</strong><br><small>${todo.date || ""} ${todo.time || ""}</small>`;
 
         const actions = document.createElement("div");
         actions.className = "d-flex flex-wrap gap-1";
@@ -45,35 +58,19 @@ document.addEventListener("DOMContentLoaded", () => {
         toggleBtn.className = "btn btn-sm btn-outline-success";
         toggleBtn.innerHTML = todo.status === "done" ? "✔" : "✓";
         toggleBtn.title = "Terminé / À faire";
-        toggleBtn.onclick = () => {
-          todos[index].status = todos[index].status === "done" ? "todo" : "done";
-          saveTodos();
-          renderTodos();
-        };
+        toggleBtn.onclick = () => toggleTodoStatus(todo);
 
         const editBtn = document.createElement("button");
         editBtn.className = "btn btn-sm btn-outline-warning";
         editBtn.innerHTML = "✎";
         editBtn.title = "Modifier";
-        editBtn.onclick = () => {
-          input.value = todo.text;
-          statusSelect.value = todo.status === "done" ? "todo" : todo.status;
-          dateInput.value = todo.date || "";
-          timeInput.value = todo.time || "";
-          todos.splice(index, 1);
-          saveTodos();
-          renderTodos();
-        };
+        editBtn.onclick = () => fillFormForEdit(todo);
 
         const deleteBtn = document.createElement("button");
         deleteBtn.className = "btn btn-sm btn-outline-danger";
         deleteBtn.innerHTML = "🗑";
         deleteBtn.title = "Supprimer";
-        deleteBtn.onclick = () => {
-          todos.splice(index, 1);
-          saveTodos();
-          renderTodos();
-        };
+        deleteBtn.onclick = () => deleteTodo(todo.id);
 
         actions.append(toggleBtn, editBtn, deleteBtn);
         li.append(content, actions);
@@ -81,21 +78,105 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const text = input.value.trim();
-    if (!text) return;
+  async function addTodo(todo) {
+    try {
+      console.log("Ajout de la tâche :", todo);
+      const res = await fetch("http://localhost:8000/api/todos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // "X-AUTH-TOKEN": getToken(),
+        },
+        body: JSON.stringify(todo),
+      });
+      console.log("Réponse API ajout:", res.status);
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Erreur ajout tâche: ${res.status} - ${errText}`);
+      }
+      await loadTodos();
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de l'ajout de la tâche");
+    }
+  }
 
-    todos.push({
-      text,
+  async function updateTodo(todo) {
+    try {
+      console.log("Mise à jour de la tâche :", todo);
+      const res = await fetch(`http://localhost:8000/api/todos/${todo.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          // "X-AUTH-TOKEN": getToken(),
+        },
+        body: JSON.stringify(todo),
+      });
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Erreur mise à jour tâche: ${res.status} - ${errText}`);
+      }
+      await loadTodos();
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de la mise à jour de la tâche");
+    }
+  }
+
+  async function deleteTodo(id) {
+    if (!confirm("Supprimer cette tâche ?")) return;
+    try {
+      const res = await fetch(`http://localhost:8000/api/todos/${id}`, {
+        method: "DELETE",
+        headers: {
+          // "X-AUTH-TOKEN": getToken(),
+        },
+      });
+      if (!res.ok) throw new Error("Erreur suppression tâche");
+      await loadTodos();
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de la suppression de la tâche");
+    }
+  }
+
+  function toggleTodoStatus(todo) {
+    const newStatus = todo.status === "done" ? "todo" : "done";
+    updateTodo({ ...todo, status: newStatus });
+  }
+
+  function fillFormForEdit(todo) {
+    input.value = todo.title;
+    statusSelect.value = todo.status === "done" ? "todo" : todo.status;
+    dateInput.value = todo.date || "";
+    timeInput.value = todo.time || "";
+    form.dataset.editId = todo.id;
+    setFormMode(true);  // corrigé ici
+  }
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+
+    const title = input.value.trim();
+    if (!title) return;
+
+    const todoData = {
+      title,
       status: statusSelect.value || "todo",
       date: dateInput.value,
       time: timeInput.value,
-    });
+    };
 
-    saveTodos();
+    const editId = form.dataset.editId;
+    if (editId) {
+      updateTodo({ ...todoData, id: editId });
+      delete form.dataset.editId;
+    } else {
+      addTodo(todoData);
+    }
+
     form.reset();
-    renderTodos();
+    setFormMode(false);  // corrigé ici
   });
 
   filterButtons.forEach(btn => {
@@ -107,5 +188,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  renderTodos();
+  setFormMode(false); // Initialement mode Ajouter
+  loadTodos();
 });

@@ -1,9 +1,10 @@
+// Configuration globale
+const apiUrl = "http://localhost:8000/api/"; // choisis le bon port/backend
+const RoleCookieName = "role"; // choisis une seule convention
 const tokenCookieName = "accesstoken";
-const RoleCookieName = "role";
-const signoutBtn = document.getElementById("signout-btn");
-const apiUrl = "http://127.0.0.1:8000/api/";
-const testMode = true; // 🧪 Activer pour mocker les données sans backend
+const testMode = false; // Passe à false quand tu veux tester le vrai backend ; Passe à true pour simuler des données
 
+const signoutBtn = document.getElementById("signout-btn");
 if (signoutBtn) {
     signoutBtn.addEventListener("click", signout);
 }
@@ -111,8 +112,8 @@ function getInfoUser() {
         });
     }
 
-    // ❌ API réelle (désactivée en mode test)
-    /*
+    //  API réelle (désactivée en mode test)
+    
     let myHeaders = new Headers();
     myHeaders.append("X-AUTH-TOKEN", getToken());
     let requestOptions = {
@@ -133,8 +134,6 @@ function getInfoUser() {
         .catch(error => {
             console.log("Erreur lors de la récupération des données utilisateur", error);
         });
-    */
-
 
 }
 // Lancement global une fois que tout est chargé
