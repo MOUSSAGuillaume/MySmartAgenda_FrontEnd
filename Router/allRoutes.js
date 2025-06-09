@@ -8,7 +8,7 @@ export const allRoutes = [
     new Route("/signup", "Inscription", "/pages/auth/signup.html", ["disconnected"], "/js/auth/signup.js"),
     new Route("/account", "Mon Compte", "/pages/auth/account.html", []),
     new Route("/editPassword", "Changement de mot de passe", "/pages/auth/editPassword.html",[]),
-    new Route("/rendezVous", "Vos Rendez-Vous", "/pages/rendez-vous.html", []),
+    new Route("/rendezVous", "Vos Rendez-Vous", "/pages/rendez-vous.html", [], "/js/rendez-vous.js"),
     new Route("/calendar", "Calendrier", "/pages/calendar.html", [], "/js/calendar.js"),
 
 ];

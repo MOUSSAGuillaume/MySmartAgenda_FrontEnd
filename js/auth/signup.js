@@ -1,5 +1,5 @@
+import { apiUrl, RoleCookieName, tokenCookieName, testMode } from "../config.js";
 //Implémenter le JS de ma page 
-
 const inputNom = document.getElementById("NomInput");
 const inputPreNom = document.getElementById("PrenomInput");
 const inputMail = document.getElementById("EmailInput");
@@ -24,6 +24,8 @@ function validateForm() {
     const passwordOk = validatePassword(inputPassword);
     const passwordConfirmOK = validateConfirmationPassword(inputPassword, inputValidationPassword);
 
+    console.log({ nomOk, prenomOk, mailOk, passwordOk, passwordConfirmOK });
+
     if (nomOk && prenomOk && mailOk && passwordOk && passwordConfirmOK) {
         btnValidation.disabled = false;
     }
@@ -45,7 +47,7 @@ function validateConfirmationPassword(inputPwd, inputConfirmPwd) {
     }
 }
 
-function validateMail(input) {
+function validateMail(_input) {
     //Définir mon regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const mailUser = inputMail.value;
@@ -65,17 +67,21 @@ function validatePassword(input) {
     //Définir mon regex
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/;
     const passwordUser = input.value;
-    if (passwordUser.match(passwordRegex)) {
+    const isValid = passwordUser.match(passwordRegex);
+
+    console.log("Mot de passe validé ?", !!isValid, passwordUser);
+
+    if (isValid) {
         input.classList.add("is-valid");
         input.classList.remove("is-invalid");
         return true;
-    }
-    else {
+    } else {
         input.classList.add("is-invalid");
         input.classList.remove("is-valid");
         return false;
     }
 }
+
 
 function validateRequires(input) {
     if (input.value != '') {
@@ -91,17 +97,20 @@ function validateRequires(input) {
 }
 
 function InscrireUtilisateur() {
-    let dataFrom = new FormData(formInscription);
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
+    const dataFrom = new FormData(formInscription);
+
     let raw = JSON.stringify({
-        "firstName": dataFrom.get("nom"),
-        "lastName": dataFrom.get("prenom"),
+        "nom": dataFrom.get("nom"),
+        "prenom": dataFrom.get("prenom"),
         "email": dataFrom.get("email"),
-        "password": dataFrom.get("mdp")
+        "password": dataFrom.get("password")
     });
+
+
 
     let requestOptions = {
         method: "POST",
@@ -110,19 +119,19 @@ function InscrireUtilisateur() {
         redirect: "follow"
     };
 
-    fetch(apiUrl+"registration", requestOptions)
+    fetch(apiUrl + "registration", requestOptions)
         .then((response) => {
-            if(!response.ok) {
+            if (response.ok) {
                 return response.json();
             }
-            else{
+            else {
                 alert("Erreur lors de l'inscription");
             }
         })
-        .then((result) => {
-            alert("Bravo "+dataFrom.get("prenom")+", vous êtes maintenant inscrit, vous pouver vous connecter.");
+        .then((_result) => {
+            alert("Bravo " + inputPreNom.value + ", vous êtes maintenant inscrit, vous pouvez vous connecter.");
             document.location.href = "/signin"
-            
+
         })
         .catch((error) => console.error(error));
 }

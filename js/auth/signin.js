@@ -1,31 +1,23 @@
-import { users } from "/js/mockData.js"; // ajuster le chemin selon l'organisation du projet
+// import { users } from "/js/mockData.js";  plus utile si tu passes en mode réel
+import { apiUrl, RoleCookieName, tokenCookieName, testMode } from "../config.js";
+import { setToken, setCookie } from "../script.js";
 
 const mailInput = document.getElementById('EmailInput');
 const passwordInput = document.getElementById('PasswordInput');
 const btnSignIn = document.getElementById('btnSignin');
 const signinForm = document.getElementById('signinForm');
 
+//  Désactiver le mode test pour ne plus utiliser les données mock
+// const testMode = true;  Assure-toi que cette variable n’est pas définie ailleurs
+
 btnSignIn.addEventListener('click', checkCredentials);
 
-function checkCredentials() {
+function checkCredentials(e) {
+    e.preventDefault(); //  sinon ça recharge la page
     const email = mailInput.value.trim();
     const password = passwordInput.value.trim();
 
-    if (testMode) {
-        // 🔁 Mode mock
-        const user = users.find(u => u.email === email && u.password === password); // ✅ corrigé ici
-        if (user) {
-            setToken("fake-jwt-token");
-            setCookie(RoleCookieName, user.role || "client", 7);
-            window.location.replace("/");
-        } else {
-            mailInput.classList.add("is-invalid");
-            passwordInput.classList.add("is-invalid");
-        }
-        return;
-    }
-
-    // 🌐 Mode réel (API)
+    //  Appel réel à ton backend
     let dataFrom = new FormData(signinForm);
 
     let myHeaders = new Headers();
@@ -33,15 +25,18 @@ function checkCredentials() {
 
     let raw = JSON.stringify({
         "email": dataFrom.get("email"),
-        "mdp": dataFrom.get("mdp")
+        "password": dataFrom.get("password") //  Doit correspondre au nom utilisé côté serveur
     });
 
     let requestOptions = {
         method: "POST",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow"
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "include", // 💥 IMPORTANT pour le CORS avec cookies/tokens
+        body: raw
     };
+
 
     fetch(apiUrl + "login", requestOptions)
         .then(async (response) => {
@@ -55,9 +50,9 @@ function checkCredentials() {
         })
         .then((result) => {
             const token = result.apiToken;
-            setToken(token);
-            setCookie(RoleCookieName, result.roles[0], 7);
-            window.location.replace("/");
+            setToken(token); //  à condition que la fonction setToken soit définie quelque part
+            setCookie(RoleCookieName, result.roles[0], 7); //  idem
+            window.location.replace("/"); // redirection après connexion réussie
         })
         .catch((error) => {
             console.error("Erreur lors de la connexion :", error);

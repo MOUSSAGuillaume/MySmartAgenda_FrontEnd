@@ -1,93 +1,96 @@
 import Route from "./Route.js";
 import { allRoutes, websiteName } from "./allRoutes.js";
+import { isConnected, getInfoUser, showAndHideElementsForRoles } from "../js/script.js";
 
-// Création d'une route pour la page 404 (page introuvable)
+// Route 404 par défaut
 const route404 = new Route("404", "Page introuvable", "/pages/404.html", []);
 
-// Fonction pour récupérer la route correspondant à une URL donnée
+// Récupération d'une route à partir de l'URL
 const getRouteByUrl = (url) => {
-  let currentRoute = null;
-  // Parcours de toutes les routes pour trouver la correspondance
-  allRoutes.forEach((element) => {
-    if (element.url == url) {
-      currentRoute = element;
-    }
-  });
-  // Si aucune correspondance n'est trouvée, on retourne la route 404
-  if (currentRoute != null) {
-    return currentRoute;
-  } else {
-    return route404;
-  }
+    return allRoutes.find(route => route.url === url) || route404;
 };
 
-// Fonction pour charger le contenu de la page
+// Fonction principale pour charger dynamiquement le contenu de la page
 const LoadContentPage = async () => {
-  const path = window.location.pathname;
-  // Récupération de l'URL actuelle
-  const actualRoute = getRouteByUrl(path);
+    const path = window.location.pathname;
+    const actualRoute = getRouteByUrl(path);
+    const allRolesArray = actualRoute.authorize;
 
-  //Vérifier les droits d'accès à la page
-  const allRolesArray = actualRoute.authorize;
+    try {
+        // 🔐 Gestion des autorisations
+        if (allRolesArray.length > 0) {
+            // Cas utilisateur non connecté interdit
+            if (!allRolesArray.includes("disconnected")) {
+                const user = await getInfoUser();
+                if (!user || !allRolesArray.includes(user.role)) {
+                    window.location.replace("/");
+                    return;
+                }
+            }
+            // Cas route réservée aux non-connectés (ex: signin, signup)
+            if (allRolesArray.includes("disconnected") && isConnected()) {
+                window.location.replace("/");
+                return;
+            }
+        }
 
-  if (allRolesArray.length > 0) {
-    if (allRolesArray.includes("disconnected")) {
-      //Si l'utilisateur est connecté, on le redirige vers la page d'accueil
-      if (isConnected()) {
-        window.location.replace("/");
-        return;
-      }
+        // 📄 Chargement de la page HTML
+        const res = await fetch(actualRoute.pathHtml);
+        const html = await res.text();
+        document.getElementById("main-page").innerHTML = html;
+
+        // 💡 Titre de la page
+        document.title = `${actualRoute.title} - ${websiteName}`;
+
+        // 🧠 Chargement JS spécifique à la page (si défini)
+        console.log("Import dynamique de :", actualRoute.pathJS);
+
+        if (actualRoute.pathJS) {
+            import(actualRoute.pathJS)
+                .then(module => {
+                    if (typeof module.default === "function") {
+                        module.default(); // Fonction d'initialisation
+                    }
+                })
+                .catch(err => {
+                    console.error("Erreur lors du chargement du module JS :", err);
+                });
+        }
+
+        // 👁️ Mise à jour des éléments visibles selon les rôles
+        showAndHideElementsForRoles();
+
+    } catch (err) {
+        console.error("Erreur lors du chargement de la page :", err);
+        window.location.replace("/404"); // Fallback si une page échoue
     }
-    else {
-      const roleUser = getRole();
-      if (!allRolesArray.includes(roleUser)) {
-        window.location.replace("/");
-      }
-    }
-  }
-
-
-  // Récupération du contenu HTML de la route
-  const html = await fetch(actualRoute.pathHtml).then((data) => data.text());
-  // Ajout du contenu HTML à l'élément avec l'ID "main-page"
-  document.getElementById("main-page").innerHTML = html;
-
-  // Ajout du contenu JavaScript
-  if (actualRoute.pathJS !== "") {
-  import(actualRoute.pathJS)
-    .then((module) => {
-      if (typeof module.default === "function") {
-        module.default(); // exécute initCalendarPage
-      }
-    })
-    .catch((err) => {
-      console.error("Erreur lors du chargement du module JS :", err);
-    });
-}
-
-
-
-  // Changement du titre de la page
-  document.title = actualRoute.title + " - " + websiteName;
-
-  //afficher et masquer les elements en fonction du rôle
-  showAndHideElementsForRoles();
 };
 
-// Fonction pour gérer les événements de routage (clic sur les liens)
+// 🎯 Gestion du clic sur un lien interne
 const routeEvent = (event) => {
-  event = event || window.event;
-  event.preventDefault();
-  // Mise à jour de l'URL dans l'historique du navigateur
-  window.history.pushState({}, "", event.target.href);
-  // Chargement du contenu de la nouvelle page
-  LoadContentPage();
+    event.preventDefault();
+    const href = event.target.href || event.currentTarget.href;
+    window.history.pushState({}, "", href);
+    LoadContentPage();
 };
 
-// Gestion de l'événement de retour en arrière dans l'historique du navigateur
-window.onpopstate = LoadContentPage;
-// Assignation de la fonction routeEvent à la propriété route de la fenêtre
-window.route = routeEvent;
-// Chargement du contenu de la page au chargement initial
-LoadContentPage();
+// Ajout unique d'un écouteur global sur tout document
+document.addEventListener("click", (event) => {
+    const anchor = event.target.closest("a");
+    if (!anchor) return; // Pas un lien
+    // Vérifie si le lien est interne au site (même origine)
+    if (anchor.origin === window.location.origin) {
+        event.preventDefault();
+        routeEvent(event);
+    }
+});
 
+
+// 🔙 Gestion du bouton retour navigateur
+window.onpopstate = LoadContentPage;
+
+// 📦 Fonction globale accessible dans HTML : <a onclick="route(event)">
+window.route = routeEvent;
+
+// ⚙️ Premier chargement
+LoadContentPage();
