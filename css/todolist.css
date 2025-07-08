@@ -1,0 +1,29 @@
+.todo-card {
+  border: none;
+  background: #f8fafc;
+  transition: box-shadow .2s, background .2s;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+}
+.todo-card:hover {
+  box-shadow: 0 4px 32px rgba(44, 120, 220, 0.08);
+  background: #eef4ff;
+}
+.todo-card.urgent {
+  border-left: 6px solid #ffc107;
+  /* Ajoute une barre jaune pour les urgentes */
+}
+.todo-card.done {
+  background: #e9fbe9;
+  opacity: 0.8;
+}
+.todo-card .card-title {
+  font-size: 1.15rem;
+  color: #2e2e5a;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+#todo-list .btn {
+  min-width: 80px;
+}

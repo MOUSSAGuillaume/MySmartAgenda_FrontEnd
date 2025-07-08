@@ -44,37 +44,48 @@ document.addEventListener("DOMContentLoaded", () => {
     todos
       .filter(todo => currentFilter === "all" || todo.status === currentFilter)
       .forEach(todo => {
-        const li = document.createElement("li");
-        li.className = `list-group-item d-flex flex-column flex-md-row justify-content-between align-items-start gap-2 ${getBadgeClass(todo.status)}`;
+        // Grille responsive Bootstrap
+        const col = document.createElement("div");
+        col.className = "col-12 col-md-6 col-lg-4";
 
-        const content = document.createElement("div");
-        content.classList.add("flex-grow-1");
-        content.innerHTML = `<strong>${todo.title}</strong><br><small>${todo.date || ""} ${todo.time || ""}</small>`;
+        // Classes pour la card
+        let cardClass = "card todo-card shadow-sm mb-2";
+        if (todo.status === "urgent") cardClass += " urgent";
+        if (todo.status === "done") cardClass += " done";
 
-        const actions = document.createElement("div");
-        actions.className = "d-flex flex-wrap gap-1";
+        // Card
+        const card = document.createElement("div");
+        card.className = cardClass;
 
-        const toggleBtn = document.createElement("button");
-        toggleBtn.className = "btn btn-sm btn-outline-success";
-        toggleBtn.innerHTML = todo.status === "done" ? "✔" : "✓";
-        toggleBtn.title = "Terminé / À faire";
-        toggleBtn.onclick = () => toggleTodoStatus(todo);
+        // Card body (structure + actions)
+        card.innerHTML = `
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">${sanitizeHtml(todo.title)}</h5>
+          <p class="card-text mb-1">
+            ${todo.date ? `<i class="bi bi-calendar-event"></i> ${todo.date}` : ""}
+            ${todo.time ? `à ${todo.time}` : ""}
+          </p>
+          <p class="card-text mb-3">
+            ${todo.status === "urgent" ? '<span class="badge bg-warning text-dark">Urgente</span>' : ""}
+            ${todo.status === "todo" ? '<span class="badge bg-info text-dark">À faire</span>' : ""}
+            ${todo.status === "done" ? '<span class="badge bg-success">Terminée</span>' : ""}
+          </p>
+          <div class="mt-auto d-flex gap-2 justify-content-end">
+            <button class="btn btn-success btn-sm" title="Terminer" ${todo.status === "done" ? "disabled" : ""}>Terminer</button>
+            <button class="btn btn-outline-secondary btn-sm" title="Modifier">Modifier</button>
+            <button class="btn btn-outline-danger btn-sm" title="Supprimer">Supprimer</button>
+          </div>
+        </div>
+      `;
 
-        const editBtn = document.createElement("button");
-        editBtn.className = "btn btn-sm btn-outline-warning";
-        editBtn.innerHTML = "✎";
-        editBtn.title = "Modifier";
+        // Actions (avec vrais handlers)
+        const [doneBtn, editBtn, delBtn] = card.querySelectorAll("button");
+        doneBtn.onclick = () => toggleTodoStatus(todo);
         editBtn.onclick = () => fillFormForEdit(todo);
+        delBtn.onclick = () => deleteTodo(todo.id);
 
-        const deleteBtn = document.createElement("button");
-        deleteBtn.className = "btn btn-sm btn-outline-danger";
-        deleteBtn.innerHTML = "🗑";
-        deleteBtn.title = "Supprimer";
-        deleteBtn.onclick = () => deleteTodo(todo.id);
-
-        actions.append(toggleBtn, editBtn, deleteBtn);
-        li.append(content, actions);
-        list.appendChild(li);
+        col.appendChild(card);
+        list.appendChild(col);
       });
   }
 

@@ -1,0 +1,40 @@
+<div class="container py-4">
+  <h1 class="text-center text-primary mb-4">Ma ToDo Liste</h1>
+
+  <!-- Filtres -->
+  <div class="mb-4 d-flex flex-wrap justify-content-center gap-2">
+    <button class="btn btn-outline-primary filter-btn active" data-filter="all">Toutes</button>
+    <button class="btn btn-outline-warning filter-btn" data-filter="urgent">Urgentes</button>
+    <button class="btn btn-outline-info filter-btn" data-filter="todo">À faire</button>
+    <button class="btn btn-outline-success filter-btn" data-filter="done">Terminées</button>
+  </div>
+
+  <!-- Formulaire -->
+  <form id="todo-form" class="row g-3 align-items-end mb-4">
+    <div class="col-12 col-md-4">
+      <label for="todo-text" class="form-label">Tâche</label>
+      <input type="text" class="form-control" id="todo-text" placeholder="Ex : Réviser le code" required>
+    </div>
+    <div class="col-6 col-md-2">
+      <label for="todo-status" class="form-label">Statut</label>
+      <select id="todo-status" class="form-select">
+        <option value="todo">À faire</option>
+        <option value="urgent">Urgente</option>
+      </select>
+    </div>
+    <div class="col-6 col-md-2">
+      <label for="todo-date" class="form-label">Date</label>
+      <input type="date" class="form-control" id="todo-date">
+    </div>
+    <div class="col-6 col-md-2">
+      <label for="todo-time" class="form-label">Heure</label>
+      <input type="time" class="form-control" id="todo-time">
+    </div>
+    <div class="col-6 col-md-2">
+      <button type="submit" class="btn btn-primary w-100">Ajouter</button>
+    </div>
+  </form>
+
+  <!-- Liste des tâches -->
+  <ul id="todo-list" class="list-group"></ul>
+</div>

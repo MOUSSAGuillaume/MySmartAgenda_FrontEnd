@@ -18,14 +18,14 @@ function checkCredentials(e) {
     const password = passwordInput.value.trim();
 
     //  Appel réel à ton backend
-    let dataFrom = new FormData(signinForm);
+    //let dataFrom = new FormData(signinForm);
 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
     let raw = JSON.stringify({
-        "email": dataFrom.get("email"),
-        "password": dataFrom.get("password") //  Doit correspondre au nom utilisé côté serveur
+        "email": email,
+        "password": password //  Doit correspondre au nom utilisé côté serveur
     });
 
     let requestOptions = {
@@ -42,6 +42,7 @@ function checkCredentials(e) {
         .then(async (response) => {
             const data = await response.json();
             if (!response.ok) {
+                console.error("Erreur API:", data.message || "Connexion échouée");
                 mailInput.classList.add("is-invalid");
                 passwordInput.classList.add("is-invalid");
                 throw new Error(data.message || "Connexion échouée");
@@ -50,11 +51,12 @@ function checkCredentials(e) {
         })
         .then((result) => {
             const token = result.apiToken;
-            setToken(token); //  à condition que la fonction setToken soit définie quelque part
-            setCookie(RoleCookieName, result.roles[0], 7); //  idem
-            window.location.replace("/"); // redirection après connexion réussie
+            setToken(token); // Sauvegarde le token
+            setCookie(RoleCookieName, result.roles[0], 7); // Sauvegarde le rôle
+            window.location.replace("/"); // Redirige après la connexion
         })
         .catch((error) => {
             console.error("Erreur lors de la connexion :", error);
         });
+
 }

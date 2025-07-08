@@ -61,9 +61,10 @@ app.post("/api/login", async (req, res) => {
   console.log("🔐 Tentative de connexion :", email);
 
   db.query("SELECT * FROM users WHERE email = ?", [email], async (err, results) => {
-    if (err.code === 'ER_DUP_ENTRY') {
-      return res.status(409).json({ message: "Email déjà utilisé" });
-}
+    if (err) {
+      console.error("Erreur lors de la connexion à la base de données:", err);
+      return res.status(500).json({ message: "Erreur serveur" });
+    }
 
     if (results.length === 0) return res.status(401).json({ message: "Email inconnu" });
 

@@ -1,69 +1,61 @@
-<div class="hero-scene text-center text-white">
-    <div class=" hero-scene-content">
-        <p>Bienvenue sur votre </p>
-        <h1>My Smart Agenda</h1>
-        <a href="/signin" class="btn btn-primary">Connectez-vous</a>
+<section id="smart-agenda" class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h1>My Smart Agenda</h1>
+        </div>
     </div>
-</div>
+    
+    <div class="row gy-4 justify-content-center">
 
-<section>
-    <article>
-        <div class="container p-4">
-            <h2 class="text-center text-primary">Organisez-vous</h2>
-            <div class="row row-cols-2 align-items-center">
-                <div class="col">
-                    <p class="text-justify">
-                        Bienvenue sur votre outil d'organisation personnel et professionnel :
-                        planifiez vos rendez-vous, gérez vos tâches avec la To Do Liste et restez maître de votre emploi du temps.
+        <!-- Bloc 1: Calendar -->
+        <div class="col-12 col-md-4">
+            <div class="card h-100 text-center shadow-sm">
+                <div class="pt-4">
+                    <img src="../img/calendar.jpg" width="80" alt="Calendar" />
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Calendar</h5>
+                    <p class="card-text">
+                        Planifiez vos rendez-vous, gérez vos tâches avec la To Do Liste et restez maître de votre
+                        emploi du temps.
                     </p>
+                    <a href="/calendar" class="btn btn-outline-primary mt-auto">Accéder</a>
                 </div>
-                <div class="col">
-                    <img class="w-75 rounded" src="../img/calendar.jpg" alt="illustration agenda"/>
-                </div>
-            </div>
-            <div class="text-center pt-4">
-                <a href="/calendar" class="btn btn-primary">Calendar</a>
             </div>
         </div>
-    </article>
 
-    <article class="bg-black text-white">
-        <div class="container p-4">
-            <h2 class="text-center text-primary">To Do Liste</h2>
-            <div class="row row-cols-2 align-items-center">
-                <div class="col">
-                    <img class="w-75 rounded" src="../img/todolist.jpg" alt="Liste de tâches" />
+        <!-- Bloc 2: To Do Liste -->
+        <div class="col-12 col-md-4">
+            <div class="card h-100 text-center shadow-sm">
+                <div class="pt-4">
+                    <img src="../img/todolist.jpg" width="80" alt="To Do Liste" />
                 </div>
-                <div class="col">
-                    <p class="text-justify">
-                        Ici vous pouvez gérer votre To Do Liste, ajouter des tâches, les modifier ou les supprimer.
-                        Vous pouvez également marquer les tâches comme terminées pour garder une trace de vos progrès ou même mettre une notion "Urgent".
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">To Do Liste</h5>
+                    <p class="card-text">
+                        Gérez votre liste de tâches, ajoutez/modifiez/supprimez-les. Marquez-les comme terminées ou
+                        urgentes.
                     </p>
+                    <a href="/todoliste" class="btn btn-outline-primary mt-auto">Accéder</a>
                 </div>
-            </div>
-            <div class="text-center pt-4">
-                <a href="/todoliste" class="btn btn-primary">Voir la To Do Liste</a>
             </div>
         </div>
-    </article>
 
-    <article>
-        <div class="container p-4">
-            <h2 class="text-center text-primary">Rendez-vous</h2>
-            <div class="row row-cols-2 align-items-center">
-                <div class="col">
-                    <p class="text-justify">
-                        Vous pouvez consulter vos rendez-vous, les modifier ou en ajouter de nouveaux.
+        <!-- Bloc 3: Rendez-vous -->
+        <div class="col-12 col-md-4">
+            <div class="card h-100 text-center shadow-sm">
+                <div class="pt-4">
+                    <img src="../img/rdv.jpg" width="80" alt="Rendez-vous" />
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Rendez-vous</h5>
+                    <p class="card-text">
+                        Consultez vos rendez-vous, modifiez-les ou ajoutez-en de nouveaux facilement.
                     </p>
+                    <a href="/rendezVous" class="btn btn-outline-primary mt-auto">Accéder</a>
                 </div>
-                <div class="col">
-                    <img class="w-75 rounded" src="../img/rdv.jpg" alt="rendez-vous"/>
-                </div>
-            </div>
-            <div class="text-center pt-4">
-                <a href="/rendezVous" class="btn btn-primary">Vos Rendez-Vous</a>
             </div>
         </div>
-    </article>
-
+    </div>
 </section>
+</body>
